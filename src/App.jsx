@@ -39,6 +39,7 @@ export default function App() {
   const [rpm, setRpm] = useState(900)
   const [compareModalOpen, setCompareModalOpen] = useState(false)
   const [compareCarIdx, setCompareCarIdx] = useState(1)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const rootRef = useReveal()
   const timers = useRef([])
@@ -103,7 +104,8 @@ export default function App() {
   }
 
   // Gaz bosish (Rev Engine)
-  const startRev = () => {
+  const startRev = (e) => {
+    if (e && e.cancelable) e.preventDefault()
     sound.init()
     setIsRevving(true)
     sound.revEngine(car.soundProfile, 1.8)
@@ -135,6 +137,11 @@ export default function App() {
     document.getElementById('show')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const handleNavClick = (id) => {
+    setMobileMenuOpen(false)
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   const filteredCars = categoryFilter === 'all'
     ? cars
     : cars.filter((c) => c.category === categoryFilter)
@@ -143,31 +150,69 @@ export default function App() {
     <>
       {/* ---------- NAVBAR ---------- */}
       <nav className="nav">
-        <div className="brand">
+        <div className="brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <span className="brand-logo-icon">⚡</span>
           AVTO<span className="accent-text">360</span>
           <span className="badge-pro">ULTRA 3D</span>
         </div>
-        <ul>
+
+        <ul className="nav-links">
           <li><a href="#show">Showroom</a></li>
           <li><a href="#rev-zone">Motor Ovozi</a></li>
           <li><a href="#brands">Brendlar ({cars.length})</a></li>
           <li><a href="#specs">Texnik HUD</a></li>
         </ul>
+
         <div className="nav-actions">
           <button
-            className="btn-icon"
+            className="btn-icon compare-nav-btn"
             onClick={() => setCompareModalOpen(true)}
             title="Avtomobillarni taqqoslash"
           >
-            ⚖️ Taqqoslash
+            ⚖️ <span className="btn-icon-label">Taqqoslash</span>
           </button>
           <button
-            className={'btn-icon' + (isMuted ? ' muted' : '')}
+            className={'btn-icon sound-nav-btn' + (isMuted ? ' muted' : '')}
             onClick={toggleMute}
             title={isMuted ? 'Ovozni yoqish' : 'Ovozni o‘chirish'}
+            aria-label="Ovoz sozlamasi"
           >
             {isMuted ? '🔇' : '🔊'}
+          </button>
+          <button
+            className={'nav-toggle' + (mobileMenuOpen ? ' open' : '')}
+            onClick={() => setMobileMenuOpen((o) => !o)}
+            aria-label="Menyu"
+            title="Menyuni ochish/yopish"
+          >
+            <span className="bar"></span>
+            <span className="bar"></span>
+            <span className="bar"></span>
+          </button>
+        </div>
+
+        {/* Mobil uchun dropdown menyu */}
+        <div className={'mobile-menu' + (mobileMenuOpen ? ' open' : '')}>
+          <a href="#show" onClick={(e) => { e.preventDefault(); handleNavClick('show') }}>
+            🏎 Showroom (3D Namoyish)
+          </a>
+          <a href="#rev-zone" onClick={(e) => { e.preventDefault(); handleNavClick('rev-zone') }}>
+            🔊 Motor Ovozi & Tahometr
+          </a>
+          <a href="#brands" onClick={(e) => { e.preventDefault(); handleNavClick('brands') }}>
+            🏁 Brendlar Galereyasi ({cars.length})
+          </a>
+          <a href="#specs" onClick={(e) => { e.preventDefault(); handleNavClick('specs') }}>
+            📊 Texnik Xususiyatlar HUD
+          </a>
+          <button
+            className="mobile-compare-btn"
+            onClick={() => {
+              setMobileMenuOpen(false)
+              setCompareModalOpen(true)
+            }}
+          >
+            ⚖️ Avtomobillarni Taqqoslash
           </button>
         </div>
       </nav>
@@ -209,8 +254,8 @@ export default function App() {
                 SUV
               </button>
               <button
-                className={'chip' + (categoryFilter.includes('EV') ? ' active' : '')}
-                onClick={() => setCategoryFilter('Elektr EV')}
+                className={'chip' + (categoryFilter === 'Elektr EV' || categoryFilter === 'Cyber EV' ? ' active' : '')}
+                onClick={() => setCategoryFilter(categoryFilter.includes('EV') ? 'all' : 'Elektr EV')}
               >
                 Elektr
               </button>
@@ -302,7 +347,7 @@ export default function App() {
                 className={'btn primary' + (!assembled ? ' active-glow' : '')}
                 onClick={toggleAssembly}
               >
-                {assembled ? '🔓 Detallarga sochish (Explode)' : '🔧 Qayta yig‘ish (Assemble)'}
+                {assembled ? '🔓 Sochish' : '🔧 Yig‘ish'}
               </button>
 
               <button
@@ -322,15 +367,18 @@ export default function App() {
                   sound.playClick()
                 }}
               >
-                {autoRotate ? '⏸ Aylanishni to‘xtatish' : '🔄 360° Aylantirish'}
+                {autoRotate ? '⏸ To‘xtatish' : '🔄 360° Aylanish'}
               </button>
 
               <button
                 className={'btn rev-btn' + (isRevving ? ' revving' : '')}
                 onMouseDown={startRev}
                 onMouseUp={stopRev}
+                onMouseLeave={stopRev}
                 onTouchStart={startRev}
                 onTouchEnd={stopRev}
+                onTouchCancel={stopRev}
+                onContextMenu={(e) => e.preventDefault()}
                 title="Bosib turing — motor gulduraydi!"
               >
                 🚀 Gaz bosish (Rev)
@@ -347,7 +395,7 @@ export default function App() {
               }}
             >
               <span className="swatch" style={{ background: selectedColor }} />
-              <div>
+              <div className="car-info-title-box">
                 <h2>{car.brand}</h2>
                 <p className="model">{car.model}</p>
               </div>
@@ -368,13 +416,14 @@ export default function App() {
                       sound.playClick()
                     }}
                     title={c.name}
+                    aria-label={c.name}
                   >
                     {selectedColor === c.hex && <span className="check">✓</span>}
                   </button>
                 ))}
               </div>
 
-              <p className="section-label" style={{ marginTop: '14px' }}>Bo‘yoq Turi</p>
+              <p className="section-label" style={{ marginTop: '14px' }}>Bo‘yoq Qoplamasi</p>
               <div className="finish-buttons">
                 {[
                   { id: 'metallic', label: 'Metallik' },
@@ -475,8 +524,11 @@ export default function App() {
                   className={'big-gas-pedal' + (isRevving ? ' active' : '')}
                   onMouseDown={startRev}
                   onMouseUp={stopRev}
+                  onMouseLeave={stopRev}
                   onTouchStart={startRev}
                   onTouchEnd={stopRev}
+                  onTouchCancel={stopRev}
+                  onContextMenu={(e) => e.preventDefault()}
                 >
                   <span className="pedal-icon">🏎</span>
                   <span className="pedal-text">
@@ -587,51 +639,53 @@ export default function App() {
               </div>
             </div>
 
-            <div className="compare-table">
-              <div className="compare-row head">
-                <span>Xususiyat</span>
-                <b>{car.brand} {car.model}</b>
-                <b>{compareCar.brand} {compareCar.model}</b>
-              </div>
-              <div className="compare-row">
-                <span>Kategoriya</span>
-                <span>{car.category}</span>
-                <span>{compareCar.category}</span>
-              </div>
-              <div className="compare-row">
-                <span>Ot Kuchi</span>
-                <b style={{ color: car.accent }}>{car.specs.power}</b>
-                <b style={{ color: compareCar.accent }}>{compareCar.specs.power}</b>
-              </div>
-              <div className="compare-row">
-                <span>0-100 km/s</span>
-                <b>{car.specs.accel}</b>
-                <b>{compareCar.specs.accel}</b>
-              </div>
-              <div className="compare-row">
-                <span>Maksimal Tezlik</span>
-                <b>{car.specs.speed}</b>
-                <b>{compareCar.specs.speed}</b>
-              </div>
-              <div className="compare-row">
-                <span>Dvigatel</span>
-                <span>{car.specs.engine}</span>
-                <span>{compareCar.specs.engine}</span>
-              </div>
-              <div className="compare-row">
-                <span>Privod</span>
-                <span>{car.specs.drive}</span>
-                <span>{compareCar.specs.drive}</span>
-              </div>
-              <div className="compare-row">
-                <span>Vazn</span>
-                <span>{car.specs.weight}</span>
-                <span>{compareCar.specs.weight}</span>
-              </div>
-              <div className="compare-row">
-                <span>Narxi</span>
-                <b style={{ color: '#4ade80' }}>{car.specs.price}</b>
-                <b style={{ color: '#4ade80' }}>{compareCar.specs.price}</b>
+            <div className="compare-table-wrapper">
+              <div className="compare-table">
+                <div className="compare-row head">
+                  <span>Xususiyat</span>
+                  <b>{car.brand} {car.model}</b>
+                  <b>{compareCar.brand} {compareCar.model}</b>
+                </div>
+                <div className="compare-row">
+                  <span>Kategoriya</span>
+                  <span>{car.category}</span>
+                  <span>{compareCar.category}</span>
+                </div>
+                <div className="compare-row">
+                  <span>Ot Kuchi</span>
+                  <b style={{ color: car.accent }}>{car.specs.power}</b>
+                  <b style={{ color: compareCar.accent }}>{compareCar.specs.power}</b>
+                </div>
+                <div className="compare-row">
+                  <span>0-100 km/s</span>
+                  <b>{car.specs.accel}</b>
+                  <b>{compareCar.specs.accel}</b>
+                </div>
+                <div className="compare-row">
+                  <span>Maksimal Tezlik</span>
+                  <b>{car.specs.speed}</b>
+                  <b>{compareCar.specs.speed}</b>
+                </div>
+                <div className="compare-row">
+                  <span>Dvigatel</span>
+                  <span>{car.specs.engine}</span>
+                  <span>{compareCar.specs.engine}</span>
+                </div>
+                <div className="compare-row">
+                  <span>Privod</span>
+                  <span>{car.specs.drive}</span>
+                  <span>{compareCar.specs.drive}</span>
+                </div>
+                <div className="compare-row">
+                  <span>Vazn</span>
+                  <span>{car.specs.weight}</span>
+                  <span>{compareCar.specs.weight}</span>
+                </div>
+                <div className="compare-row">
+                  <span>Narxi</span>
+                  <b style={{ color: '#4ade80' }}>{car.specs.price}</b>
+                  <b style={{ color: '#4ade80' }}>{compareCar.specs.price}</b>
+                </div>
               </div>
             </div>
           </div>

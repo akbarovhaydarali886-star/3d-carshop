@@ -263,7 +263,7 @@ function RealCarModel({
 }
 
 // Kamera presets animatori
-function CameraController({ viewMode }) {
+function CameraController({ viewMode, autoRotate }) {
   const { camera } = useThree()
   const controlsRef = useRef()
 
@@ -318,6 +318,8 @@ function CameraController({ viewMode }) {
       maxDistance={18}
       minPolarAngle={0.15}
       maxPolarAngle={Math.PI / 2 - 0.05}
+      autoRotate={autoRotate}
+      autoRotateSpeed={1.5}
     />
   )
 }
@@ -439,7 +441,7 @@ function ShowroomStage({
       />
 
       {/* Kamera boshqaruvi */}
-      <CameraController viewMode={viewMode} />
+      <CameraController viewMode={viewMode} autoRotate={autoRotate} />
     </>
   )
 }

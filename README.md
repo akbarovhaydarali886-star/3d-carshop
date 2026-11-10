@@ -19,6 +19,7 @@ Realistik 3D avtomobillar namoyishi, PBR bo'yoq konfiguratori, interaktiv farala
 - **Dvigatel akustikasi (Sound Engine)**: Web Audio API orqali V8, V12, Turbo va EV motorlarining haqiqiy tovush sintezi hamda interaktiv tahometr (8 200 RPM gacha).
 - **6 ta kinematik kamera rejimi**: 360° Erkin, Old, Yon, Orqa, Tepadan va G'ildirak yaqinidan.
 - **Avtomobillarni taqqoslash (VS Compare)**: Istalgan 2 ta mashinani texnik parametrlarini solishtirish.
+- **100% Ultra-Responsive Moslashuvchanlik**: Smartfonlar (iPhone, Android), planshetlar (iPad) va katta monitorlarga to'liq moslashgan layout, mobil gamburger menyu, sensorli sensor (touch) optimallashuvi va safe-area qo'llab-quvvatlashi.
 
 ## 🛠 Texnologiyalar
 
@@ -27,6 +28,7 @@ Realistik 3D avtomobillar namoyishi, PBR bo'yoq konfiguratori, interaktiv farala
 - **Vite 6**
 - **Web Audio API** (tovushlar sintezi)
 - **Khronos PBR Next** (Clearcoat, Transmission, Emissive)
+- **CSS3 Modern Glassmorphism & Responsive Flexbox/Grid**
 
 ## 💻 O'rnatish va ishga tushirish
 

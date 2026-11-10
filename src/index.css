@@ -1,7 +1,7 @@
 :root {
   --bg: #06070b;
   --bg-darker: #040508;
-  --card-bg: rgba(14, 18, 27, 0.72);
+  --card-bg: rgba(14, 18, 27, 0.76);
   --card-border: rgba(255, 255, 255, 0.08);
   --card-hover: rgba(255, 255, 255, 0.12);
   --fg: #f1f5f9;
@@ -11,7 +11,7 @@
   --red: #ef4444;
   --green: #4ade80;
   --yellow: #facc15;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color-scheme: dark;
 }
 
@@ -19,6 +19,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -36,7 +37,7 @@ body {
 }
 
 h1, h2, h3, .brand, .section-title {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   letter-spacing: -0.02em;
 }
 
@@ -49,6 +50,7 @@ button {
   font-family: inherit;
   border: none;
   outline: none;
+  touch-action: manipulation;
 }
 
 /* ---------- Typography & Utility ---------- */
@@ -82,11 +84,13 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px clamp(16px, 3.5vw, 48px);
+  padding: 12px clamp(16px, 3.5vw, 44px);
+  padding-top: max(12px, env(safe-area-inset-top));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  background: rgba(6, 7, 11, 0.75);
+  background: rgba(6, 7, 11, 0.82);
   border-bottom: 1px solid var(--card-border);
+  transition: all 0.3s ease;
 }
 
 .brand {
@@ -94,8 +98,10 @@ button {
   align-items: center;
   gap: 8px;
   font-weight: 700;
-  font-size: 19px;
+  font-size: 18.5px;
   letter-spacing: 0.05em;
+  cursor: pointer;
+  user-select: none;
 }
 
 .brand-logo-icon {
@@ -114,20 +120,21 @@ button {
   letter-spacing: 0.1em;
 }
 
-.nav ul {
+.nav-links {
   display: flex;
-  gap: 26px;
+  gap: 24px;
   list-style: none;
   font-size: 13.5px;
   font-weight: 500;
   color: var(--muted);
 }
 
-.nav ul a {
+.nav-links a {
   transition: color 0.2s, text-shadow 0.2s;
+  padding: 6px 2px;
 }
 
-.nav ul a:hover {
+.nav-links a:hover {
   color: #ffffff;
   text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
 }
@@ -135,7 +142,7 @@ button {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .btn-icon {
@@ -150,7 +157,7 @@ button {
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-icon:hover {
@@ -163,6 +170,99 @@ button {
   opacity: 0.6;
 }
 
+/* Mobil Hamburger Tugmasi */
+.nav-toggle {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  padding: 8px;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.nav-toggle .bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: all 0.25s ease;
+}
+
+.nav-toggle.open .bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.nav-toggle.open .bar:nth-child(2) {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+.nav-toggle.open .bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Mobil Dropdown Menyu */
+.mobile-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(8, 10, 16, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--card-border);
+  padding: 16px 20px;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-menu.open {
+  display: flex;
+}
+
+.mobile-menu a {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--fg);
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.mobile-menu a:hover, .mobile-menu a:active {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: var(--accent);
+}
+
+.mobile-compare-btn {
+  margin-top: 4px;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(110deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.2));
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+}
+
 /* ---------- Showroom Grid Layout ---------- */
 main {
   position: relative;
@@ -172,18 +272,18 @@ main {
 .showroom {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 270px 1fr 340px;
+  grid-template-columns: 280px 1fr 340px;
   grid-template-areas: 'list main info';
   gap: 20px;
   align-items: stretch;
-  padding: 84px clamp(14px, 2.5vw, 40px) 30px;
+  padding: 80px clamp(12px, 2.5vw, 36px) 30px;
 }
 
 .panel {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 20px;
-  padding: 20px 16px;
+  padding: 18px 16px;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
@@ -194,7 +294,7 @@ main {
   grid-area: list;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 110px);
+  max-height: calc(100vh - 105px);
 }
 
 .panel-title-row {
@@ -221,7 +321,7 @@ main {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .chip {
@@ -278,7 +378,7 @@ main {
 }
 
 .brand-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   transform: translateX(3px);
 }
 
@@ -309,7 +409,7 @@ main {
 }
 
 .brand-btn-text b {
-  font-size: 13.5px;
+  font-size: 13px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -342,7 +442,7 @@ main {
 }
 
 .showroom-header {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .header-badges {
@@ -354,9 +454,9 @@ main {
 }
 
 .pill-badge {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 999px;
   border: 1px solid;
   letter-spacing: 0.04em;
@@ -364,8 +464,8 @@ main {
 }
 
 .pill-year, .pill-engine {
-  font-size: 11.5px;
-  padding: 3px 9px;
+  font-size: 11px;
+  padding: 3px 8px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--card-border);
@@ -373,15 +473,15 @@ main {
 }
 
 .show-main h1 {
-  font-size: clamp(28px, 3.8vw, 52px);
-  line-height: 1.05;
+  font-size: clamp(26px, 3.8vw, 48px);
+  line-height: 1.08;
   font-weight: 700;
 }
 
 .show-main .sub {
   color: var(--muted);
   margin-top: 6px;
-  font-size: 14.5px;
+  font-size: 14px;
   line-height: 1.5;
   max-width: 680px;
 }
@@ -391,7 +491,7 @@ main {
   position: relative;
   flex: 1;
   min-height: 52vh;
-  margin-top: 10px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
 }
@@ -423,7 +523,7 @@ main {
   font-size: 11.5px;
   letter-spacing: 0.04em;
   color: var(--muted);
-  background: rgba(8, 10, 16, 0.75);
+  background: rgba(8, 10, 16, 0.8);
   border: 1px solid var(--card-border);
   padding: 6px 14px;
   border-radius: 999px;
@@ -433,6 +533,8 @@ main {
   display: flex;
   align-items: center;
   gap: 6px;
+  z-index: 2;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 .hint-icon {
@@ -441,24 +543,31 @@ main {
   padding: 1px 6px;
   border-radius: 4px;
   font-weight: 700;
-  font-size: 10.5px;
+  font-size: 10px;
 }
 
 /* Kamera Presets Bar */
 .camera-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-top: 10px;
   overflow-x: auto;
   padding: 4px 2px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.camera-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .cam-label {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--muted);
   white-space: nowrap;
+  padding-left: 2px;
 }
 
 .cam-btn {
@@ -471,6 +580,7 @@ main {
   color: var(--muted);
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.2s;
 }
 
@@ -490,7 +600,7 @@ main {
 .controls {
   display: flex;
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 12px;
   flex-wrap: wrap;
 }
 
@@ -505,14 +615,20 @@ main {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
 }
 
 .btn:hover {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn.primary {
@@ -542,7 +658,6 @@ main {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.15));
   border-color: rgba(239, 68, 68, 0.35);
   color: #fca5a5;
-  user-select: none;
 }
 
 .btn.rev-btn.revving {
@@ -558,7 +673,7 @@ main {
   display: flex;
   flex-direction: column;
   border-top: 3px solid var(--accent);
-  max-height: calc(100vh - 110px);
+  max-height: calc(100vh - 105px);
   overflow-y: auto;
 }
 
@@ -580,31 +695,43 @@ main {
 }
 
 .swatch {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   flex-shrink: 0;
   box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
+.car-info-title-box {
+  min-width: 0;
+  flex: 1;
+}
+
 .car-info h2 {
-  font-size: 20px;
+  font-size: 19px;
   line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .car-info .model {
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: 12px;
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .price-tag {
   margin-left: auto;
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   color: #4ade80;
   text-shadow: 0 0 12px rgba(74, 222, 128, 0.25);
+  white-space: nowrap;
 }
 
 /* Customizer Box (Bo'yoq & Rang) */
@@ -612,12 +739,12 @@ main {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--card-border);
   border-radius: 14px;
-  padding: 14px;
-  margin-top: 14px;
+  padding: 12px 14px;
+  margin-top: 12px;
 }
 
 .section-label {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.1em;
@@ -632,8 +759,8 @@ main {
 }
 
 .color-swatch-btn {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -651,11 +778,11 @@ main {
 .color-swatch-btn.selected {
   border-color: #ffffff;
   transform: scale(1.18);
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
 }
 
 .color-swatch-btn .check {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 900;
   color: #ffffff;
   text-shadow: 0 0 4px #000000;
@@ -668,7 +795,7 @@ main {
 
 .finish-btn {
   flex: 1;
-  font-size: 11.5px;
+  font-size: 11px;
   padding: 6px 8px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.04);
@@ -676,6 +803,7 @@ main {
   color: var(--muted);
   cursor: pointer;
   transition: all 0.2s;
+  text-align: center;
 }
 
 .finish-btn:hover {
@@ -692,29 +820,29 @@ main {
 
 .desc {
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.6;
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 /* Specs Grid HUD */
 .specs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 7px;
+  margin-top: 12px;
 }
 
 .spec {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--card-border);
   border-radius: 10px;
-  padding: 9px 11px;
+  padding: 8px 10px;
 }
 
 .spec span {
   display: block;
-  font-size: 10.5px;
+  font-size: 10px;
   color: var(--muted);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -722,17 +850,17 @@ main {
 
 .spec b {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
+  font-size: 13.5px;
   display: block;
-  margin-top: 3px;
+  margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .state {
-  margin-top: 14px;
-  font-size: 12.5px;
+  margin-top: 12px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   padding: 8px 12px;
@@ -758,24 +886,24 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16px;
+  margin-top: 14px;
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 .slider-counter b {
   color: var(--fg);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .arrow {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1px solid var(--card-border);
   background: rgba(255, 255, 255, 0.04);
   color: var(--fg);
-  font-size: 18px;
+  font-size: 19px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -793,22 +921,24 @@ main {
 .model-loader-card {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: rgba(8, 10, 16, 0.85);
+  gap: 12px;
+  background: rgba(8, 10, 16, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 16px 22px;
-  border-radius: 16px;
+  padding: 14px 20px;
+  border-radius: 14px;
   backdrop-filter: blur(16px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
 }
 
 .spinner-ring {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 3px solid rgba(255, 255, 255, 0.15);
   border-top-color: #38bdf8;
   animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
 }
 
 @keyframes spin {
@@ -821,51 +951,51 @@ main {
 }
 
 .loader-text b {
-  font-size: 14.5px;
+  font-size: 13.5px;
 }
 
 .loader-text span {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--muted);
 }
 
 /* ---------- Rev Zone (Motor Akustikasi & Taxometr) ---------- */
 .rev-zone {
-  padding: 50px clamp(16px, 4vw, 56px);
+  padding: 48px clamp(14px, 4vw, 52px);
   background: linear-gradient(180deg, transparent 0%, rgba(14, 18, 27, 0.4) 100%);
 }
 
 .rev-container {
   display: grid;
   grid-template-columns: 1fr 340px;
-  gap: 32px;
+  gap: 28px;
   align-items: center;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 24px;
-  padding: 36px 32px;
+  padding: 34px 30px;
   backdrop-filter: blur(14px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
 .rev-info h2 {
-  font-size: clamp(24px, 3.2vw, 42px);
+  font-size: clamp(23px, 3.2vw, 38px);
   margin-bottom: 10px;
 }
 
 .rev-desc {
   color: var(--muted);
-  font-size: 15px;
+  font-size: 14.5px;
   line-height: 1.6;
   max-width: 580px;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .big-gas-pedal {
   display: inline-flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 28px;
+  gap: 14px;
+  padding: 16px 26px;
   border-radius: 18px;
   background: linear-gradient(135deg, #1e293b, #0f172a);
   border: 2px solid rgba(239, 68, 68, 0.4);
@@ -882,14 +1012,14 @@ main {
   box-shadow: 0 12px 32px rgba(239, 68, 68, 0.25);
 }
 
-.big-gas-pedal.active {
+.big-gas-pedal:active, .big-gas-pedal.active {
   transform: scale(0.96);
   background: linear-gradient(135deg, #dc2626, #b91c1c);
   box-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
 }
 
 .pedal-icon {
-  font-size: 28px;
+  font-size: 26px;
 }
 
 .pedal-text {
@@ -899,12 +1029,12 @@ main {
 }
 
 .pedal-text b {
-  font-size: 15px;
+  font-size: 14.5px;
   letter-spacing: 0.04em;
 }
 
 .pedal-text small {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--muted);
 }
 
@@ -921,13 +1051,13 @@ main {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--card-border);
   border-radius: 20px;
-  padding: 24px;
+  padding: 22px;
 }
 
 .gauge {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 195px;
+  height: 195px;
   border-radius: 50%;
   border: 6px solid rgba(255, 255, 255, 0.08);
   border-top-color: #ef4444;
@@ -949,7 +1079,7 @@ main {
 .gauge-needle {
   position: absolute;
   width: 3px;
-  height: 75px;
+  height: 72px;
   background: linear-gradient(to top, #ffffff, #ef4444);
   transform-origin: bottom center;
   bottom: 50%;
@@ -959,8 +1089,8 @@ main {
 }
 
 .gauge-center {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #ffffff;
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
@@ -969,7 +1099,7 @@ main {
 
 .gauge-readout {
   position: absolute;
-  bottom: 28px;
+  bottom: 26px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -978,7 +1108,7 @@ main {
 
 .rpm-num {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   color: #ffffff;
   letter-spacing: 0.05em;
@@ -1000,7 +1130,7 @@ main {
 }
 
 .gear-display b {
-  font-size: 16px;
+  font-size: 15px;
   color: #38bdf8;
   padding: 2px 10px;
   border-radius: 6px;
@@ -1009,49 +1139,53 @@ main {
 
 /* ---------- Brands Section Grid ---------- */
 #brands {
-  padding: 80px clamp(16px, 4vw, 64px);
+  padding: 72px clamp(14px, 4vw, 56px);
 }
 
 .section-head {
   text-align: center;
   max-width: 650px;
-  margin: 0 auto 40px;
+  margin: 0 auto 36px;
 }
 
 .section-title {
-  font-size: clamp(30px, 4.2vw, 52px);
+  font-size: clamp(28px, 4.2vw, 48px);
   margin-top: 4px;
 }
 
 .section-sub {
   color: var(--muted);
-  font-size: 15px;
+  font-size: 14.5px;
   line-height: 1.6;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(295px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+  gap: 20px;
 }
 
 .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 20px;
-  padding: 24px 22px;
+  padding: 22px 20px;
   backdrop-filter: blur(10px);
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
 }
 
 .card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
   border-color: rgba(56, 189, 248, 0.45);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.card:active {
+  transform: scale(0.98);
 }
 
 .card.selected {
@@ -1066,7 +1200,7 @@ main {
 
 .card .num {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--muted);
   letter-spacing: 0.15em;
 }
@@ -1081,12 +1215,12 @@ main {
 }
 
 .card h3 {
-  font-size: 24px;
-  margin-top: 14px;
+  font-size: 22px;
+  margin-top: 12px;
 }
 
 .card-model {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   margin-top: 2px;
 }
@@ -1095,14 +1229,14 @@ main {
   font-size: 13px;
   color: var(--fg);
   opacity: 0.88;
-  margin-top: 10px;
+  margin-top: 8px;
   font-weight: 500;
   line-height: 1.4;
 }
 
 .card-desc {
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.6;
   margin-top: 8px;
   flex: 1;
@@ -1112,12 +1246,12 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 .mini-specs span {
-  font-size: 11.5px;
-  padding: 4px 10px;
+  font-size: 11px;
+  padding: 4px 9px;
   border-radius: 999px;
   border: 1px solid var(--card-border);
   color: var(--muted);
@@ -1128,13 +1262,13 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 18px;
-  padding-top: 14px;
+  margin-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .card-cta {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--accent);
 }
@@ -1149,21 +1283,22 @@ main {
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
 }
 
 .modal-content {
   background: #0b0f19;
   border: 1px solid var(--card-border);
-  border-radius: 24px;
+  border-radius: 22px;
   width: 100%;
   max-width: 680px;
-  padding: 28px;
+  padding: 24px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
   max-height: 90vh;
   overflow-y: auto;
@@ -1173,21 +1308,24 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .modal-head h2 {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .modal-close {
   background: rgba(255, 255, 255, 0.06);
   color: var(--fg);
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background 0.2s;
 }
 
@@ -1198,8 +1336,8 @@ main {
 .compare-selectors {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 22px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .compare-selectors div {
@@ -1228,7 +1366,7 @@ main {
 
 .vs-badge {
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--accent);
   padding: 6px 10px;
   border-radius: 8px;
@@ -1236,18 +1374,23 @@ main {
   margin-top: 18px;
 }
 
-.compare-table {
+.compare-table-wrapper {
   border: 1px solid var(--card-border);
   border-radius: 14px;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.compare-table {
+  min-width: 100%;
 }
 
 .compare-row {
   display: grid;
-  grid-template-columns: 120px 1fr 1fr;
-  padding: 11px 16px;
+  grid-template-columns: 110px 1fr 1fr;
+  padding: 10px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  font-size: 13.5px;
+  font-size: 13px;
   align-items: center;
 }
 
@@ -1258,19 +1401,19 @@ main {
 .compare-row.head {
   background: rgba(255, 255, 255, 0.05);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13.5px;
 }
 
 .compare-row span:first-child {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11.5px;
   text-transform: uppercase;
 }
 
 /* ---------- Reveal Animation ---------- */
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(28px);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1283,7 +1426,8 @@ main {
 footer {
   position: relative;
   z-index: 1;
-  padding: 34px clamp(16px, 4vw, 56px);
+  padding: 30px clamp(16px, 4vw, 52px);
+  padding-bottom: max(30px, env(safe-area-inset-bottom));
   color: var(--muted);
   font-size: 13px;
   border-top: 1px solid var(--card-border);
@@ -1297,7 +1441,7 @@ footer {
 
 .footer-left p {
   margin-top: 6px;
-  font-size: 12.5px;
+  font-size: 12px;
 }
 
 .footer-right {
@@ -1311,15 +1455,23 @@ footer {
   opacity: 0.4;
 }
 
-/* ---------- Responsive Layout ---------- */
-@media (max-width: 1180px) {
+/* ==========================================================================
+   RESPONSIVE DESIGN (Planshetlar, Smartfonlar va Moslashuvchanlik)
+   ========================================================================== */
+
+/* ---------- 1. Planshetlar va Kichik Noutbuklar (<= 1199px) ---------- */
+@media (max-width: 1199px) {
   .showroom {
-    grid-template-columns: 1fr;
-    grid-template-areas: 'main' 'info' 'list';
+    grid-template-columns: 1fr 320px;
+    grid-template-areas: 
+      'main info'
+      'list list';
+    gap: 18px;
+    padding: 76px clamp(14px, 3vw, 28px) 24px;
   }
 
   .brand-list {
-    max-height: none;
+    max-height: none !important;
   }
 
   .brand-scroll-area {
@@ -1327,37 +1479,273 @@ footer {
     gap: 8px;
     overflow-x: auto;
     padding-bottom: 6px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .brand-scroll-area::-webkit-scrollbar {
+    display: none;
   }
 
   .brand-btn {
-    min-width: 210px;
+    min-width: 200px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
     margin-bottom: 0;
   }
 
   .stage {
-    min-height: 48vh;
+    min-height: 46vh;
+  }
+}
+
+/* ---------- 2. O'rta Ekranlar va Mobilga O'tish (<= 880px) ---------- */
+@media (max-width: 880px) {
+  .nav-links {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .showroom {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      'main'
+      'info'
+      'list';
+    gap: 16px;
+    padding: 72px 14px 20px;
+  }
+
+  .car-info {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .brand-list {
+    max-height: none !important;
+  }
+
+  .stage {
+    min-height: 42vh;
+    height: 44vh;
   }
 
   .rev-container {
     grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 26px 20px;
+    text-align: center;
+  }
+
+  .rev-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .rev-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .big-gas-pedal {
+    width: 100%;
+    max-width: 420px;
+    justify-content: center;
+  }
+
+  .tachometer-box {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
   }
 }
 
-@media (max-width: 768px) {
-  .nav ul {
+/* ---------- 3. Smartfonlar (<= 640px) ---------- */
+@media (max-width: 640px) {
+  .nav {
+    padding: 10px 14px;
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+
+  .brand {
+    font-size: 16.5px;
+  }
+
+  .btn-icon-label {
     display: none;
   }
 
+  .btn-icon {
+    padding: 7px 10px;
+  }
+
   .show-main h1 {
-    font-size: 32px;
+    font-size: 27px;
+  }
+
+  .show-main .sub {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .stage-wrapper {
+    min-height: auto;
+  }
+
+  .stage {
+    height: 40vh;
+    min-height: 290px;
+    max-height: 400px;
+    border-radius: 16px;
+  }
+
+  .hint {
+    font-size: 10.5px;
+    padding: 5px 11px;
+    bottom: 8px;
+  }
+
+  /* Boshqaruv tugmalari 2x2 ixcham grid */
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 10px 8px;
+    font-size: 12px;
+    border-radius: 12px;
+  }
+
+  .camera-bar {
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .cam-btn {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .panel {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+
+  .car-info h2 {
+    font-size: 18px;
+  }
+
+  .price-tag {
+    font-size: 14px;
   }
 
   .specs {
     grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .spec {
+    padding: 7px 9px;
+  }
+
+  .spec b {
+    font-size: 12.5px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .card {
+    padding: 18px 16px;
+  }
+
+  /* Taqqoslash modali */
+  .modal-backdrop {
+    padding: 10px;
+  }
+
+  .modal-content {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+
+  .compare-selectors {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .vs-badge {
+    margin-top: 0;
+    align-self: center;
   }
 
   .compare-row {
-    grid-template-columns: 90px 1fr 1fr;
+    grid-template-columns: 92px minmax(100px, 1fr) minmax(100px, 1fr);
     font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .footer-right {
+    font-size: 11.5px;
+  }
+}
+
+/* ---------- 4. Kichik Smartfonlar (<= 400px) ---------- */
+@media (max-width: 400px) {
+  .showroom {
+    padding: 68px 10px 16px;
+  }
+
+  .show-main h1 {
+    font-size: 24px;
+  }
+
+  .stage {
+    height: 38vh;
+    min-height: 270px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .btn {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  .color-swatch-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .finish-btn {
+    font-size: 10.5px;
+    padding: 5px 6px;
+  }
+
+  .gauge {
+    width: 170px;
+    height: 170px;
+  }
+
+  .gauge-needle {
+    height: 62px;
+  }
+
+  .rpm-num {
+    font-size: 19px;
   }
 }
