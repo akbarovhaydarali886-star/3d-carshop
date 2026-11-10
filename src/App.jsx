@@ -290,6 +290,21 @@ export default function App() {
 
           {/* O'RTA ASOSIY 3D SAHNA */}
           <div className="show-main">
+            {/* MOBIL UCHUN TEZKOR BRENDLAR PANEL (YUQORIDA TURADI) */}
+            <div className="mobile-quick-brands">
+              {cars.map((c, i) => (
+                <button
+                  key={c.id}
+                  className={'mobile-brand-chip' + (i === carIdx ? ' active' : '')}
+                  onClick={() => selectCar(i)}
+                  style={i === carIdx ? { borderColor: c.accent, background: `${c.accent}24`, color: '#ffffff' } : undefined}
+                >
+                  <span className="dot" style={{ background: c.defaultColor }} />
+                  <span>{c.brand}</span>
+                </button>
+              ))}
+            </div>
+
             <div className="showroom-header reveal">
               <div className="header-badges">
                 <span className="pill-badge" style={{ background: `${car.accent}22`, color: car.accent, borderColor: `${car.accent}55` }}>
@@ -297,6 +312,7 @@ export default function App() {
                 </span>
                 <span className="pill-year">{car.year}</span>
                 <span className="pill-engine">{car.specs.engine}</span>
+                <span className="header-price-badge">{car.specs.price}</span>
               </div>
               <h1>
                 {car.brand} <span className="grad">{car.model}</span>
@@ -314,6 +330,11 @@ export default function App() {
                 autoRotate={autoRotate}
                 headlightsOn={headlightsOn}
                 viewMode={viewMode}
+                onPrevCar={() => selectCar((carIdx - 1 + cars.length) % cars.length)}
+                onNextCar={() => selectCar((carIdx + 1) % cars.length)}
+                carIdx={carIdx}
+                totalCars={cars.length}
+                onToggleAutoRotate={() => setAutoRotate((v) => !v)}
               />
 
               {/* SAHNA USTIDAGI KAMERA TUGMALARI */}

@@ -515,6 +515,115 @@ main {
   touch-action: none;
 }
 
+/* Sahna ustidagi avtomobil nomi va navigatsiya elementlari */
+.stage-top-overlay {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.stage-car-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(8, 10, 16, 0.82);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.stage-car-count {
+  color: var(--muted);
+  font-size: 11px;
+  padding-left: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.stage-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(8, 10, 16, 0.85);
+  border: 1px solid var(--card-border);
+  color: #ffffff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+.stage-nav-arrow:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: var(--accent);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.stage-nav-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.stage-nav-prev {
+  left: 12px;
+}
+
+.stage-nav-next {
+  right: 12px;
+}
+
+.stage-autorotate-pill {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 10;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(8, 10, 16, 0.82);
+  border: 1px solid var(--card-border);
+  color: var(--muted);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.stage-autorotate-pill:hover, .stage-autorotate-pill.active {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.55);
+  color: var(--accent);
+}
+
+.mobile-quick-brands {
+  display: none;
+}
+
+.header-price-badge {
+  display: none;
+}
+
 .hint {
   position: absolute;
   bottom: 12px;
@@ -1002,6 +1111,9 @@ main {
   color: var(--fg);
   cursor: pointer;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
 }
@@ -1520,6 +1632,90 @@ footer {
     padding: 72px 14px 20px;
   }
 
+  /* Mobil uchun yuqoridagi tezkor brendlar paneli */
+  .mobile-quick-brands {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 10px;
+    margin-bottom: 12px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .mobile-quick-brands::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-brand-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    color: var(--fg);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    transition: all 0.2s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-brand-chip.active {
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .header-price-badge {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .camera-bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .camera-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cam-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .stage-nav-arrow {
+    width: 42px;
+    height: 42px;
+    font-size: 24px;
+    background: rgba(8, 10, 16, 0.88);
+  }
+
+  .stage-nav-prev {
+    left: 8px;
+  }
+
+  .stage-nav-next {
+    right: 8px;
+  }
+
   .car-info {
     max-height: none !important;
     overflow: visible !important;
@@ -1602,6 +1798,30 @@ footer {
     min-height: 290px;
     max-height: 400px;
     border-radius: 16px;
+  }
+
+  .stage-top-overlay {
+    top: 8px;
+    left: 8px;
+  }
+
+  .stage-car-chip {
+    padding: 5px 10px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .stage-nav-arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 22px;
+  }
+
+  .stage-autorotate-pill {
+    bottom: 8px;
+    right: 8px;
+    font-size: 10.5px;
+    padding: 5px 9px;
   }
 
   .hint {

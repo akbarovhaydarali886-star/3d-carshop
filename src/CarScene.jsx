@@ -454,9 +454,52 @@ export default function CarScene({
   autoRotate,
   headlightsOn,
   viewMode,
+  onPrevCar,
+  onNextCar,
+  carIdx = 0,
+  totalCars = 8,
+  onToggleAutoRotate,
 }) {
   return (
     <div className="stage">
+      {/* Sahna ustidagi avtomobil nomi va raqami */}
+      <div className="stage-top-overlay">
+        <div className="stage-car-chip">
+          <span className="dot" style={{ background: color }} />
+          <b>{car.brand} {car.model}</b>
+          <span className="stage-car-count">{carIdx + 1} / {totalCars}</span>
+        </div>
+      </div>
+
+      {/* Tezkor avtomobil almashtirish tugmalari (mobil va desktopda juda qulay) */}
+      {onPrevCar && (
+        <button
+          className="stage-nav-arrow stage-nav-prev"
+          onClick={(e) => {
+            e.stopPropagation()
+            onPrevCar()
+          }}
+          aria-label="Oldingi avtomobil"
+          title="Oldingi avtomobil"
+        >
+          ‹
+        </button>
+      )}
+
+      {onNextCar && (
+        <button
+          className="stage-nav-arrow stage-nav-next"
+          onClick={(e) => {
+            e.stopPropagation()
+            onNextCar()
+          }}
+          aria-label="Keyingi avtomobil"
+          title="Keyingi avtomobil"
+        >
+          ›
+        </button>
+      )}
+
       <Canvas
         shadows
         camera={{ position: [6.5, 2.7, 7.2], fov: 40 }}
@@ -483,8 +526,21 @@ export default function CarScene({
 
       <div className="hint">
         <span className="hint-icon">360°</span>
-        Sichqoncha yoki barmoq bilan erkin aylantiring va kattalashtiring
+        <span className="hint-text">Aylantirish: barmoq/sichqoncha bilan suring</span>
       </div>
+
+      {onToggleAutoRotate && (
+        <button
+          className={'stage-autorotate-pill' + (autoRotate ? ' active' : '')}
+          onClick={(e) => {
+            e.stopPropagation()
+            onToggleAutoRotate()
+          }}
+          title={autoRotate ? "Aylanishni to'xtatish" : "360° avto-aylantirish"}
+        >
+          {autoRotate ? '⏸ 360°' : '🔄 360°'}
+        </button>
+      )}
     </div>
   )
 }
